@@ -1,0 +1,34 @@
+name: Alerta ITLA
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Build the project
+        run: npm run build
+      - name: Run the project
+        run: npm start
+
+  message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to ntfy.sh
+        run: |
+          curl \
+            -d "Se ha realizado la actualizacion en ${GITHUB_REPOSITORY} en la rama main exitosamente." \
+            -H "Title: GitHub Actions - Briam Gonzalez  " \
+            -H "Priority: default" \
+            https://ntfy.sh/devops-itla
